@@ -1,6 +1,12 @@
 #ifndef OPENMM_CONTEXT_H_
 #define OPENMM_CONTEXT_H_
-
+/* -------------------------------------------------------------------------- *
+ *                                   EFcalc                                   *
+ * -------------------------------------------------------------------------- *
+ * Yaoyi Chen added batch potential energy and forces calcualtion routines in *
+ * May 2020. Use at your own risk :)                                          *
+ * -------------------------------------------------------------------------- */
+// Original copyright notice
 /* -------------------------------------------------------------------------- *
  *                                   OpenMM                                   *
  * -------------------------------------------------------------------------- *
@@ -113,6 +119,26 @@ public:
      * Get the Platform being used for calculations.
      */
     Platform& getPlatform();
+    /**
+     * Compute the potential energy and forces in batch mode with this context.
+     * Designated for use within the Python interface
+     * Warning: uncompatible with a context for real simulation, because this function will destroy
+     * current state of the context.
+     * 
+     * @param s0 number of frames (a set of coordinates for a conformation) in the batch.
+     * @param s1 number of atoms in each frame, should be equal to the one of this context.
+     * @param s2 number of dimentions of atomic coordinates. Yes, it should be 3.
+     * @param pos pointer to `double`: first entry of batch coordinates 3d-array of shape [s0, s1, s2].
+     * @param n should be equal to s0. Repeatation because of the def in SWIG interface for numpy.
+     * @param energies pointer to `double`: first entry of batch potential energy output, a
+     * preallocated 1d-array of shape [s0,].
+     * @param l should be equal to s0. Repeatation because of the def in SWIG interface for numpy.
+     * @param forces pointer to `double`: first entry of batch forces output, a preallocated 3d-array
+     * of shape [s0, s1, s2].
+     *
+     * Added by Yaoyi Chen.
+     */
+    void EFcalc(int s0, int s1, int s2, double *pos, int n, double *energies, int l, double *forces);
     /**
      * Get a State object recording the current state information stored in this context.
      * 
