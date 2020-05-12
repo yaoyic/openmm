@@ -1,11 +1,27 @@
 %inline %{
     #include <cstring>
     #include <numpy/arrayobject.h>
+    #include <vector>
 %}
 
-%extend OpenMM::Context {
+%apply (int DIM1, int DIM2, int DIM3, double* IN_ARRAY3) {(int s0, int s1, int s2, double *pos)};
+%apply (int DIM1, double* ARGOUT_ARRAY1) {(int l, double *forces), (int n, double *energies)};
 
+%extend OpenMM::Context {
   %pythoncode %{
+    def EFcalc(self, positions):
+        """Calculate the energies and forces in a batch manner.
+        Warning: will destroy the current state of the Context object!
+        Input:
+        positions: np.array of shape (n_frames, n_atoms, n_dim).
+        Outputs:
+        energies: np.array of shape (n_frames,)
+        forces: np.array of shape (n_frame, n_atoms, n_dim)
+        """
+        s0, s1, s2 = positions.shape # shape will be checked in the C++ code :)
+        energies, forces = _openmm.Context_EFcalc(self, positions, s0, s0 * s1 * s2)
+        return energies, forces.reshape((s0, s1, s2))
+
     def getIntegrator(self):
         return self._integrator
 
