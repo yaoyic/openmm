@@ -161,9 +161,9 @@ int Py_SequenceToVecDouble(PyObject* obj, std::vector<double>& out) {
     PyObject* item1 = NULL;
 
     if (isNumpyAvailable()) {
-        if (PyArray_Check(stripped) && PyArray_ISCARRAY_RO(stripped) && PyArray_NDIM(stripped) == 1) {
-            int type = PyArray_TYPE(stripped);
-            int length = PyArray_SIZE(stripped);
+        if (PyArray_Check(stripped) && PyArray_ISCARRAY_RO((PyArrayObject*) stripped) && PyArray_NDIM((PyArrayObject*) stripped) == 1) {
+            int type = PyArray_TYPE((PyArrayObject*) stripped);
+            int length = PyArray_SIZE((PyArrayObject*) stripped);
             void* data = PyArray_DATA((PyArrayObject*) stripped);
             if (type == NPY_DOUBLE) {
                 out.resize(length);
@@ -233,9 +233,9 @@ int Py_SequenceToVecDouble(PyObject* obj, std::vector<double>& out) {
 int Py_SequenceToVecVec3(PyObject* obj, std::vector<Vec3>& out) {
     PyObject* stripped = Py_StripOpenMMUnits(obj);      // new reference
     if (isNumpyAvailable()) {
-        if (PyArray_Check(stripped) && PyArray_ISCARRAY_RO(stripped) && PyArray_NDIM(stripped) == 2 && PyArray_DIM(stripped, 1) == 3) {
-            int type = PyArray_TYPE(stripped);
-            int length = PyArray_DIM(stripped, 0);
+        if (PyArray_Check(stripped) && PyArray_ISCARRAY_RO((PyArrayObject*) stripped) && PyArray_NDIM((PyArrayObject*) stripped) == 2 && PyArray_DIM((PyArrayObject*) stripped, 1) == 3) {
+            int type = PyArray_TYPE((PyArrayObject*) stripped);
+            int length = PyArray_DIM((PyArrayObject*) stripped, 0);
             void* data = PyArray_DATA((PyArrayObject*) stripped);
             if (type == NPY_DOUBLE) {
                 out.resize(length);

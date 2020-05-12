@@ -45,6 +45,13 @@ using namespace OpenMM;
 
 %}
 
+// <- added by Yaoyi for batchEF plugin
+%include "numpy.i"
+%init %{
+import_array();
+%}
+// -> added by Yaoyi for batchEF plugin
+
 %feature("autodoc", "0");
 %nodefaultctor;
 
